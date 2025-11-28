@@ -610,12 +610,12 @@ const supabase = useSupabase()
 const heroSlides = [
   {
     id: 1,
-    imageUrl: '/landingpage/glass-with-ice-cube-smoke.jpg',
+    imageUrl: '/landing-page/glass-with-ice-cube-smoke.jpg',
     alt: 'Dimly lit wine cellar with rows of bottles resting in oak racks.'
   },
   {
     id: 2,
-    imageUrl: '/landingpage/glass-with-ice-cube-smoke.jpg',
+    imageUrl: '/landing-page/glass-with-ice-cube-smoke.jpg',
     alt: 'Elegant tablescape with crystal stemware and a decanted red wine.'
   },
   {
