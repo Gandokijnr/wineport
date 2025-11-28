@@ -1,0 +1,1 @@
+export { default } from "file:///C:/Users/Gandoki/Desktop/flux/node_modules/@nuxt/vite-builder/dist/runtime/client.manifest.mjs"

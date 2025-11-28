@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 24 24 27;
+    --color-secondary: 244 244 245;
+    --color-accent: 59 130 246;
+    --color-success: 34 197 94;
+    --color-warning: 251 146 60;
+    --color-error: 239 68 68;
+  }
+
+  body {
+    @apply bg-white text-zinc-900 antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-zinc-900 text-white hover:bg-zinc-800 focus:ring-zinc-900;
+  }
+
+  .btn-secondary {
+    @apply bg-zinc-100 text-zinc-900 hover:bg-zinc-200 focus:ring-zinc-500;
+  }
+
+  .btn-outline {
+    @apply border border-zinc-300 bg-transparent text-zinc-900 hover:bg-zinc-50 focus:ring-zinc-500;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition-all;
+  }
+
+  .card {
+    @apply bg-white border border-zinc-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow;
+  }
+}
