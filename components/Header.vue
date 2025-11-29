@@ -1,22 +1,22 @@
 <template>
-  <header class="sticky top-0 z-50 bg-white border-b border-zinc-200">
+  <header class="sticky top-0 z-50 bg-black border-b border-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center gap-8">
           <NuxtLink to="/" class="flex items-center gap-2">
-            <span class="text-2xl font-bold text-zinc-900">LiquidLogistics</span>
+            <span class="text-2xl font-bold text-white">Flux</span>
           </NuxtLink>
 
           <nav class="hidden md:flex items-center gap-6">
             <NuxtLink
               to="/products"
-              class="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
+              class="text-sm font-medium text-zinc-200 hover:text-zinc-500 transition-colors"
             >
               Products
             </NuxtLink>
             <NuxtLink
               to="/categories"
-              class="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
+              class="text-sm font-medium text-zinc-200 hover:text-zinc-500 transition-colors"
             >
               Categories
             </NuxtLink>
@@ -26,15 +26,15 @@
         <div class="flex items-center gap-4">
           <button
             @click="toggleSearch"
-            class="p-2 text-zinc-600 hover:text-zinc-900 transition-colors"
+            class="p-2 text-zinc-200 hover:text-zinc-500 transition-colors"
             aria-label="Search"
           >
-            <Search :size="20" />
+            <Search :size="20" /> 
           </button>
 
           <NuxtLink
             to="/cart"
-            class="relative p-2 text-zinc-600 hover:text-zinc-900 transition-colors"
+            class="relative p-2 text-zinc-200 hover:text-zinc-500 transition-colors"
             aria-label="Cart"
           >
             <ShoppingCart :size="20" />
@@ -48,7 +48,7 @@
 
           <NuxtLink
             to="/account"
-            class="p-2 text-zinc-600 hover:text-zinc-900 transition-colors"
+            class="p-2 text-zinc-200 hover:text-zinc-500 transition-colors"
             aria-label="Account"
           >
             <User :size="20" />
@@ -56,7 +56,7 @@
 
           <button
             @click="toggleMenu"
-            class="md:hidden p-2 text-zinc-600 hover:text-zinc-900 transition-colors"
+            class="md:hidden p-2 text-zinc-200 hover:text-zinc-500 transition-colors"
             aria-label="Menu"
           >
             <Menu :size="20" />

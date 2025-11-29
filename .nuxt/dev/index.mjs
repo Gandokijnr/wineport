@@ -1362,7 +1362,7 @@ const _sBAFFYBZwFYNczU1lrFiNxIdULSLRirYaoHxvtsfZ2A = (function(nitro) {
 
 const rootDir = "C:/Users/Gandoki/Desktop/flux";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"Next-generation beverage e-commerce platform for B2C and B2B customers"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"}],"style":[],"script":[],"noscript":[],"title":"LiquidLogistics - Premium Beverage Commerce"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"Next-generation beverage e-commerce platform for B2C and B2B customers"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"}],"style":[],"script":[],"noscript":[],"title":"Flux - Premium Beverage Commerce"};
 
 const appRootTag = "div";
 

@@ -465,7 +465,7 @@ onMounted(async () => {
 })
 
 useHead({
-  title: 'Checkout - LiquidLogistics',
+  title: 'Checkout - Flux',
   meta: [
     {
       name: 'description',

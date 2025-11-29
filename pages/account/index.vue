@@ -12,9 +12,11 @@
     </div>
 
     <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 class="text-4xl font-bold text-zinc-900 mb-8">My Account</h1>
+      <h1 class="text-4xl font-bold text-zinc-900 mb-6">My Account</h1>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <AccountNav />
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <NuxtLink to="/account/orders" class="card hover:shadow-lg transition-shadow cursor-pointer">
           <div class="flex items-center gap-4 mb-4">
             <div class="w-12 h-12 bg-zinc-900 rounded-lg flex items-center justify-center">
@@ -50,6 +52,18 @@
             </div>
           </div>
         </NuxtLink>
+
+        <NuxtLink to="/account/security" class="card hover:shadow-lg transition-shadow cursor-pointer">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 bg-zinc-900 rounded-lg flex items-center justify-center">
+              <Lock class="text-white" :size="24" />
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-zinc-900">Security</h3>
+              <p class="text-sm text-zinc-600">Manage password and sessions</p>
+            </div>
+          </div>
+        </NuxtLink>
       </div>
 
       <div class="mt-8">
@@ -66,6 +80,11 @@
 
 <script setup lang="ts">
 import { Package, User, MapPin, Lock } from 'lucide-vue-next'
+import AccountNav from '~/components/AccountNav.vue'
+
+definePageMeta({
+  middleware: 'auth'
+})
 
 const { user, signOut, checkAuth } = useAuth()
 const router = useRouter()
@@ -82,11 +101,11 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'My Account - LiquidLogistics',
+  title: 'My Account - Flux',
   meta: [
     {
       name: 'description',
-      content: 'Manage your LiquidLogistics account'
+      content: 'Manage your Flux account'
     }
   ]
 })

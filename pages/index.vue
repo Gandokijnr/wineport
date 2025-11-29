@@ -802,7 +802,7 @@ onBeforeUnmount(() => {
 })
 
 useHead({
-  title: 'LiquidLogistics - Premium Wine E‑Commerce',
+  title: 'Flux - Premium Wine E‑Commerce',
   meta: [
     {
       name: 'description',

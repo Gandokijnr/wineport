@@ -238,11 +238,11 @@ watch(() => route.params.slug, () => {
 watchEffect(() => {
   if (product.value) {
     useHead({
-      title: `${product.value.name} - LiquidLogistics`,
+      title: `${product.value.name} - Flux`,
       meta: [
         {
           name: 'description',
-          content: product.value.short_description || product.value.description || `Buy ${product.value.name} from LiquidLogistics`
+          content: product.value.short_description || product.value.description || `Buy ${product.value.name} from Flux`
         }
       ]
     })

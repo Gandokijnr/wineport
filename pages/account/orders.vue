@@ -1,12 +1,14 @@
 <template>
   <div class="min-h-screen bg-zinc-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="mb-8">
-        <NuxtLink to="/account" class="text-sm text-zinc-600 hover:text-zinc-900 mb-4 inline-block">
+      <div class="mb-6">
+        <NuxtLink to="/account" class="text-sm text-zinc-600 hover:text-zinc-900 mb-2 inline-block">
           &larr; Back to Account
         </NuxtLink>
-        <h1 class="text-4xl font-bold text-zinc-900">Order History</h1>
+        <h1 class="text-3xl font-bold text-zinc-900">Order History</h1>
       </div>
+
+      <AccountNav />
 
       <div v-if="loading" class="space-y-4">
         <div v-for="i in 3" :key="i" class="card animate-pulse">
@@ -25,31 +27,12 @@
       </div>
 
       <div v-else class="space-y-4">
-        <NuxtLink
+        <OrderCard
           v-for="order in orders"
           :key="order.id"
+          :order="order"
           :to="`/orders/${order.id}`"
-          class="card hover:shadow-lg transition-shadow cursor-pointer"
-        >
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <p class="text-sm text-zinc-600 mb-1">Order {{ order.order_number }}</p>
-              <p class="text-lg font-semibold text-zinc-900">
-                ${{ order.total.toFixed(2) }}
-              </p>
-            </div>
-            <span
-              class="px-3 py-1 rounded-full text-sm font-medium"
-              :class="getStatusClass(order.status)"
-            >
-              {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
-            </span>
-          </div>
-
-          <div class="text-sm text-zinc-600">
-            Placed on {{ formatDate(order.created_at) }}
-          </div>
-        </NuxtLink>
+        />
       </div>
     </div>
   </div>
@@ -58,6 +41,12 @@
 <script setup lang="ts">
 import { Package } from 'lucide-vue-next'
 import type { Database } from '~/types/database'
+import AccountNav from '~/components/AccountNav.vue'
+import OrderCard from '~/components/OrderCard.vue'
+
+definePageMeta({
+  middleware: 'auth'
+})
 
 type Order = Database['public']['Tables']['orders']['Row']
 
@@ -86,32 +75,13 @@ const fetchOrders = async () => {
   }
 }
 
-const getStatusClass = (status: string) => {
-  const classes = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    processing: 'bg-blue-100 text-blue-800',
-    shipped: 'bg-indigo-100 text-indigo-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800'
-  }
-  return classes[status as keyof typeof classes] || 'bg-zinc-100 text-zinc-800'
-}
-
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
 onMounted(async () => {
   await checkAuth()
   await fetchOrders()
 })
 
 useHead({
-  title: 'Order History - LiquidLogistics',
+  title: 'Order History - Flux',
   meta: [
     {
       name: 'description',

@@ -239,7 +239,7 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'Products - LiquidLogistics',
+  title: 'Products - Flux',
   meta: [
     {
       name: 'description',

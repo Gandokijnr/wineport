@@ -14,9 +14,14 @@ type HydrationStrategies = {
 type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }> & T
 
 
+export const AccountNav: typeof import("../components/AccountNav.vue")['default']
+export const AddressCard: typeof import("../components/AddressCard.vue")['default']
 export const Footer: typeof import("../components/Footer.vue")['default']
 export const Header: typeof import("../components/Header.vue")['default']
+export const OrderCard: typeof import("../components/OrderCard.vue")['default']
+export const OrderTimeline: typeof import("../components/OrderTimeline.vue")['default']
 export const ProductCard: typeof import("../components/ProductCard.vue")['default']
+export const ProfileForm: typeof import("../components/ProfileForm.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -40,9 +45,14 @@ export const Head: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Html']
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
+export const LazyAccountNav: LazyComponent<typeof import("../components/AccountNav.vue")['default']>
+export const LazyAddressCard: LazyComponent<typeof import("../components/AddressCard.vue")['default']>
 export const LazyFooter: LazyComponent<typeof import("../components/Footer.vue")['default']>
 export const LazyHeader: LazyComponent<typeof import("../components/Header.vue")['default']>
+export const LazyOrderCard: LazyComponent<typeof import("../components/OrderCard.vue")['default']>
+export const LazyOrderTimeline: LazyComponent<typeof import("../components/OrderTimeline.vue")['default']>
 export const LazyProductCard: LazyComponent<typeof import("../components/ProductCard.vue")['default']>
+export const LazyProfileForm: LazyComponent<typeof import("../components/ProfileForm.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

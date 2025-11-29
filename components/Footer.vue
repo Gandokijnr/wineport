@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <h3 class="text-white text-lg font-bold mb-4">LiquidLogistics</h3>
+          <h3 class="text-white text-lg font-bold mb-4">Flux</h3>
           <p class="text-sm leading-relaxed">
             Premium beverage commerce platform serving both retail and business customers with excellence.
           </p>
@@ -91,7 +91,7 @@
       <div class="mt-12 pt-8 border-t border-zinc-800">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
           <p class="text-sm">
-            &copy; {{ new Date().getFullYear() }} LiquidLogistics. All rights reserved.
+            &copy; {{ new Date().getFullYear() }} Flux. All rights reserved.
           </p>
           <div class="flex items-center gap-6">
             <NuxtLink to="/privacy" class="text-sm hover:text-white transition-colors">

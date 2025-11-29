@@ -1,5 +1,5 @@
 /*
-  # LiquidLogistics E-Commerce Database Schema
+  # Flux E-Commerce Database Schema
 
   ## Overview
   Complete database schema for a modern beverage e-commerce platform supporting both B2C and B2B customers.
@@ -454,6 +454,38 @@ CREATE POLICY "Admins can approve reviews"
   USING (auth.jwt()->>'role' = 'admin')
   WITH CHECK (auth.jwt()->>'role' = 'admin');
 
+-- Order status events table for timeline tracking
+CREATE TABLE IF NOT EXISTS order_status_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id uuid REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
+  status text NOT NULL CHECK (status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled')),
+  note text,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE order_status_events ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Customers can view status events for own orders"
+  ON order_status_events FOR SELECT
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM orders
+      WHERE orders.id = order_status_events.order_id
+      AND orders.customer_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Admins can view all status events"
+  ON order_status_events FOR SELECT
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin');
+
+CREATE POLICY "Admins can insert status events"
+  ON order_status_events FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.jwt()->>'role' = 'admin');
+
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
@@ -496,3 +528,92 @@ CREATE TRIGGER update_cart_items_updated_at
   BEFORE UPDATE ON cart_items
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
+
+-- Blog posts table
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL,
+  slug text UNIQUE NOT NULL,
+  excerpt text,
+  content text,
+  cover_image_url text,
+  tags text[] DEFAULT '{}',
+  status text DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+  published_at timestamptz,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
+
+-- Public can read published posts
+CREATE POLICY "Published blog posts are viewable by everyone"
+  ON blog_posts FOR SELECT
+  TO public
+  USING (status = 'published');
+
+-- Admins can read all posts
+CREATE POLICY "Admins can view all blog posts"
+  ON blog_posts FOR SELECT
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin');
+
+-- Admins can insert/update/delete posts
+CREATE POLICY "Only admins can insert blog posts"
+  ON blog_posts FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.jwt()->>'role' = 'admin');
+
+CREATE POLICY "Only admins can update blog posts"
+  ON blog_posts FOR UPDATE
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin')
+  WITH CHECK (auth.jwt()->>'role' = 'admin');
+
+CREATE POLICY "Only admins can delete blog posts"
+  ON blog_posts FOR DELETE
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin');
+
+-- Testimonials table
+CREATE TABLE IF NOT EXISTS testimonials (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  author_name text NOT NULL,
+  author_title text,
+  quote text NOT NULL,
+  rating integer CHECK (rating >= 1 AND rating <= 5),
+  is_featured boolean DEFAULT false,
+  is_approved boolean DEFAULT false,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+-- Public can read approved testimonials
+CREATE POLICY "Approved testimonials are viewable by everyone"
+  ON testimonials FOR SELECT
+  TO public
+  USING (is_approved = true);
+
+-- Admins can read all testimonials
+CREATE POLICY "Admins can view all testimonials"
+  ON testimonials FOR SELECT
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin');
+
+-- Admins can insert/update/delete testimonials
+CREATE POLICY "Only admins can insert testimonials"
+  ON testimonials FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.jwt()->>'role' = 'admin');
+
+CREATE POLICY "Only admins can update testimonials"
+  ON testimonials FOR UPDATE
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin')
+  WITH CHECK (auth.jwt()->>'role' = 'admin');
+
+CREATE POLICY "Only admins can delete testimonials"
+  ON testimonials FOR DELETE
+  TO authenticated
+  USING (auth.jwt()->>'role' = 'admin');

@@ -153,7 +153,7 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'Shopping Cart - LiquidLogistics',
+  title: 'Shopping Cart - Flux',
   meta: [
     {
       name: 'description',

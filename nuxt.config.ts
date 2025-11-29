@@ -10,14 +10,14 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      supabaseUrl: process.env.VITE_SUPABASE_URL,
-      supabaseAnonKey: process.env.VITE_SUPABASE_ANON_KEY
+      supabaseUrl: process.env.NUXT_SUPABASE_URL,
+      supabaseAnonKey: process.env.NUXT_SUPABASE_ANON_KEY
     }
   },
 
   app: {
     head: {
-      title: 'LiquidLogistics - Premium Beverage Commerce',
+      title: 'Flux - Premium Beverage Commerce',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

@@ -3,7 +3,7 @@
     <div class="max-w-md w-full">
       <div class="text-center mb-8">
         <NuxtLink to="/" class="inline-block">
-          <span class="text-3xl font-bold text-zinc-900">LiquidLogistics</span>
+          <span class="text-3xl font-bold text-zinc-900">Flux</span>
         </NuxtLink>
         <h2 class="mt-6 text-3xl font-bold text-zinc-900">Sign in to your account</h2>
         <p class="mt-2 text-sm text-zinc-600">
@@ -116,11 +116,11 @@ const handleSignIn = async () => {
 }
 
 useHead({
-  title: 'Sign In - LiquidLogistics',
+  title: 'Sign In - Flux',
   meta: [
     {
       name: 'description',
-      content: 'Sign in to your LiquidLogistics account'
+      content: 'Sign in to your Flux account'
     }
   ]
 })

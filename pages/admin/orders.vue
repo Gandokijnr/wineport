@@ -92,7 +92,7 @@
                 <td class="px-6 py-4">
                   <select
                     v-model="order.status"
-                    @change="updateOrderStatus(order.id, order.status)"
+                    @change="handleStatusChange(order)"
                     class="text-xs px-2 py-1 rounded border-0 focus:ring-2 focus:ring-zinc-900"
                     :class="getStatusClass(order.status)"
                   >
@@ -104,13 +104,132 @@
                   </select>
                 </td>
                 <td class="px-6 py-4 text-right">
-                  <NuxtLink :to="`/orders/${order.id}`" class="text-zinc-600 hover:text-zinc-900">
+                  <button
+                    type="button"
+                    class="text-zinc-600 hover:text-zinc-900"
+                    @click="openOrderDetails(order)"
+                  >
                     <Eye :size="18" />
-                  </NuxtLink>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Order details drawer -->
+      <div
+        v-if="selectedOrder"
+        class="fixed inset-0 z-40 flex items-stretch justify-end bg-black/40"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="w-full max-w-xl bg-white shadow-2xl h-full overflow-y-auto">
+          <div class="border-b border-zinc-200 px-6 py-4 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-medium text-zinc-500 uppercase tracking-[0.2em]">
+                Order
+              </p>
+              <h2 class="text-lg font-semibold text-zinc-900">
+                {{ selectedOrder.order_number }}
+              </h2>
+              <p class="text-xs text-zinc-500">
+                Placed {{ formatDate(selectedOrder.created_at) }}
+              </p>
+            </div>
+            <button
+              type="button"
+              class="rounded-full p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900"
+              @click="closeOrderDetails"
+              aria-label="Close order details"
+            >
+              <X :size="18" />
+            </button>
+          </div>
+
+          <div class="px-6 py-4 space-y-6">
+            <!-- Status & totals -->
+            <section class="flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-zinc-500 uppercase tracking-[0.2em]">
+                    Status
+                  </span>
+                  <span
+                    class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
+                    :class="getStatusClass(selectedOrder.status)"
+                  >
+                    {{ selectedOrder.status }}
+                  </span>
+                </div>
+                <p class="text-sm font-semibold text-zinc-900">
+                  Total ${{ selectedOrder.total.toFixed(2) }}
+                </p>
+              </div>
+            </section>
+
+            <!-- Line items -->
+            <section>
+              <h3 class="text-sm font-semibold text-zinc-900 mb-2">
+                Items
+              </h3>
+
+              <div v-if="loadingItems" class="space-y-3">
+                <div v-for="i in 3" :key="i" class="flex justify-between items-center">
+                  <div class="space-y-1 flex-1">
+                    <div class="h-4 bg-zinc-200 rounded w-2/3"></div>
+                    <div class="h-3 bg-zinc-100 rounded w-1/3"></div>
+                  </div>
+                  <div class="h-4 bg-zinc-200 rounded w-16 ml-4"></div>
+                </div>
+              </div>
+
+              <div v-else-if="orderItems.length === 0" class="text-sm text-zinc-500">
+                No items found for this order.
+              </div>
+
+              <ul v-else class="divide-y divide-zinc-200">
+                <li
+                  v-for="item in orderItems"
+                  :key="item.id"
+                  class="py-3 flex items-start justify-between gap-3"
+                >
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-zinc-900">
+                      {{ item.product_snapshot?.name || 'Product' }}
+                    </p>
+                    <p class="text-xs text-zinc-500">
+                      Qty {{ item.quantity }} · ${{ item.unit_price.toFixed(2) }} each
+                    </p>
+                  </div>
+                  <p class="text-sm font-semibold text-zinc-900">
+                    ${{ item.subtotal.toFixed(2) }}
+                  </p>
+                </li>
+              </ul>
+            </section>
+
+            <!-- Addresses -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h3 class="text-sm font-semibold text-zinc-900 mb-1">
+                  Shipping
+                </h3>
+                <p class="text-xs text-zinc-700 whitespace-pre-line">
+                  {{ formatAddress(selectedOrder.shipping_address) }}
+                </p>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-zinc-900 mb-1">
+                  Billing
+                </h3>
+                <p class="text-xs text-zinc-700 whitespace-pre-line">
+                  {{ formatAddress(selectedOrder.billing_address) }}
+                </p>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </div>
@@ -118,10 +237,15 @@
 </template>
 
 <script setup lang="ts">
-import { Search, ShoppingBag, Eye } from 'lucide-vue-next'
+import { Search, ShoppingBag, Eye, X } from 'lucide-vue-next'
 import type { Database } from '~/types/database'
 
+definePageMeta({
+  middleware: 'admin'
+})
+
 type Order = Database['public']['Tables']['orders']['Row']
+type OrderItem = Database['public']['Tables']['order_items']['Row']
 
 const supabase = useSupabase()
 
@@ -129,6 +253,11 @@ const loading = ref(true)
 const orders = ref<Order[]>([])
 const searchQuery = ref('')
 const statusFilter = ref('')
+const previousStatuses = reactive<Record<string, Order['status']>>({})
+
+const selectedOrder = ref<Order | null>(null)
+const orderItems = ref<OrderItem[]>([])
+const loadingItems = ref(false)
 
 const fetchOrders = async () => {
   loading.value = true
@@ -147,6 +276,11 @@ const fetchOrders = async () => {
 
     if (error) throw error
     orders.value = data || []
+
+    // Track previous statuses so we can safely revert on failed updates
+    for (const order of orders.value) {
+      previousStatuses[order.id] = order.status
+    }
   } catch (error) {
     console.error('Error fetching orders:', error)
   } finally {
@@ -154,7 +288,47 @@ const fetchOrders = async () => {
   }
 }
 
-const updateOrderStatus = async (orderId: string, newStatus: string) => {
+const openOrderDetails = async (order: Order) => {
+  selectedOrder.value = order
+  loadingItems.value = true
+  orderItems.value = []
+
+  try {
+    const { data, error } = await supabase
+      .from('order_items')
+      .select('*')
+      .eq('order_id', order.id)
+      .order('created_at', { ascending: true })
+
+    if (error) throw error
+    orderItems.value = (data || []) as OrderItem[]
+  } catch (error) {
+    console.error('Error fetching order items:', error)
+  } finally {
+    loadingItems.value = false
+  }
+}
+
+const closeOrderDetails = () => {
+  selectedOrder.value = null
+  orderItems.value = []
+}
+
+const handleStatusChange = async (order: Order) => {
+  const orderId = order.id
+  const newStatus = order.status
+  const previousStatus = previousStatuses[orderId]
+
+  const confirmed = window.confirm(
+    `Change status for order ${order.order_number} from "${previousStatus}" to "${newStatus}"?`
+  )
+
+  if (!confirmed) {
+    // Revert selection if user cancels
+    order.status = previousStatus
+    return
+  }
+
   try {
     const { error } = await supabase
       .from('orders')
@@ -162,8 +336,12 @@ const updateOrderStatus = async (orderId: string, newStatus: string) => {
       .eq('id', orderId)
 
     if (error) throw error
+
+    previousStatuses[orderId] = newStatus
   } catch (error) {
     console.error('Error updating order status:', error)
+    // Revert to previous known good status on failure
+    order.status = previousStatus
   }
 }
 
@@ -176,6 +354,22 @@ const getStatusClass = (status: string) => {
     cancelled: 'bg-red-100 text-red-800'
   }
   return classes[status as keyof typeof classes] || 'bg-zinc-100 text-zinc-800'
+}
+
+const formatAddress = (address: any) => {
+  if (!address) return '—'
+
+  const parts = [
+    [address.first_name, address.last_name].filter(Boolean).join(' '),
+    address.address_line1,
+    address.address_line2,
+    [address.city, address.state].filter(Boolean).join(', '),
+    address.postal_code,
+    address.country,
+    address.phone
+  ].filter(Boolean)
+
+  return parts.join('\n')
 }
 
 const formatDate = (date: string) => {
@@ -191,11 +385,11 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'Manage Orders - Admin - LiquidLogistics',
+  title: 'Manage Orders - Admin - Flux',
   meta: [
     {
       name: 'description',
-      content: 'Manage orders in LiquidLogistics'
+      content: 'Manage orders in Flux'
     }
   ]
 })

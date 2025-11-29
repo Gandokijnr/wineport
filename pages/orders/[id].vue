@@ -14,35 +14,42 @@
         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle :size="32" class="text-green-600" />
         </div>
-        <h1 class="text-3xl font-bold text-zinc-900 mb-2">Order Confirmed!</h1>
+        <h1 class="text-3xl font-bold text-zinc-900 mb-2">Order Details</h1>
         <p class="text-lg text-zinc-600">
           Thank you for your order. Your order number is <span class="font-mono font-semibold">{{ order.order_number }}</span>
         </p>
       </div>
 
       <div class="space-y-6">
-        <div class="card">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-zinc-900">Order Details</h2>
-            <span
-              class="px-3 py-1 rounded-full text-sm font-medium"
-              :class="getStatusClass(order.status)"
-            >
-              {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
-            </span>
+        <div class="card grid grid-cols-1 md:grid-cols-[1.5fr,1fr] gap-6">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-bold text-zinc-900">Order summary</h2>
+              <span
+                class="px-3 py-1 rounded-full text-sm font-medium"
+                :class="getStatusClass(order.status)"
+              >
+                {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span class="text-zinc-600">Order date:</span>
+                <p class="font-medium text-zinc-900">{{ formatDate(order.created_at) }}</p>
+              </div>
+              <div>
+                <span class="text-zinc-600">Payment status:</span>
+                <p class="font-medium text-zinc-900">
+                  {{ order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1) }}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span class="text-zinc-600">Order Date:</span>
-              <p class="font-medium text-zinc-900">{{ formatDate(order.created_at) }}</p>
-            </div>
-            <div>
-              <span class="text-zinc-600">Payment Status:</span>
-              <p class="font-medium text-zinc-900">
-                {{ order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1) }}
-              </p>
-            </div>
+          <div>
+            <h3 class="text-sm font-semibold text-zinc-900 mb-2">Tracking</h3>
+            <OrderTimeline :events="statusEvents" :current-status="order.status" />
           </div>
         </div>
 
@@ -161,20 +168,28 @@
 <script setup lang="ts">
 import { CheckCircle } from 'lucide-vue-next'
 import type { Database } from '~/types/database'
+import OrderTimeline from '~/components/OrderTimeline.vue'
+
+definePageMeta({
+  middleware: 'auth'
+})
 
 type Order = Database['public']['Tables']['orders']['Row']
 type OrderItem = Database['public']['Tables']['order_items']['Row']
+type OrderStatusEvent = Database['public']['Tables']['order_status_events']['Row']
 
 const route = useRoute()
 const supabase = useSupabase()
+const { checkAuth } = useAuth()
 
 const loading = ref(true)
 const order = ref<Order | null>(null)
 const orderItems = ref<OrderItem[]>([])
+const statusEvents = ref<OrderStatusEvent[]>([])
 
 const fetchOrder = async () => {
   try {
-    const { data: orderData, error: orderError } = await supabase
+    const { data, error: orderError } = await supabase
       .from('orders')
       .select('*')
       .eq('id', route.params.id)
@@ -182,16 +197,28 @@ const fetchOrder = async () => {
 
     if (orderError) throw orderError
 
+    const orderData = data as Order | null
     order.value = orderData
 
     if (orderData) {
-      const { data: itemsData, error: itemsError } = await supabase
-        .from('order_items')
-        .select('*')
-        .eq('order_id', orderData.id)
+      const [{ data: itemsData, error: itemsError }, { data: eventsData, error: eventsError }] =
+        await Promise.all([
+          supabase
+            .from('order_items')
+            .select('*')
+            .eq('order_id', orderData.id),
+          supabase
+            .from('order_status_events')
+            .select('*')
+            .eq('order_id', orderData.id)
+            .order('created_at', { ascending: true })
+        ])
 
       if (itemsError) throw itemsError
-      orderItems.value = itemsData || []
+      if (eventsError) throw eventsError
+
+      orderItems.value = (itemsData || []) as OrderItem[]
+      statusEvents.value = (eventsData || []) as OrderStatusEvent[]
     }
   } catch (error) {
     console.error('Error fetching order:', error)
@@ -221,14 +248,15 @@ const formatDate = (date: string) => {
   })
 }
 
-onMounted(() => {
-  fetchOrder()
+onMounted(async () => {
+  await checkAuth()
+  await fetchOrder()
 })
 
 watchEffect(() => {
   if (order.value) {
     useHead({
-      title: `Order ${order.value.order_number} - LiquidLogistics`,
+      title: `Order ${order.value.order_number} - Flux`,
       meta: [
         {
           name: 'description',

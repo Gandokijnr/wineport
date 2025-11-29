@@ -77,6 +77,30 @@
             </div>
           </div>
         </NuxtLink>
+
+        <NuxtLink to="/admin/blog" class="card hover:shadow-lg transition-shadow cursor-pointer">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 bg-zinc-900 rounded-lg flex items-center justify-center">
+              <FileText class="text-white" :size="24" />
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-zinc-900">Blog</h3>
+              <p class="text-sm text-zinc-600">Publish stories and guides</p>
+            </div>
+          </div>
+        </NuxtLink>
+
+        <NuxtLink to="/admin/testimonials" class="card hover:shadow-lg transition-shadow cursor-pointer">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 bg-zinc-900 rounded-lg flex items-center justify-center">
+              <Quote class="text-white" :size="24" />
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-zinc-900">Testimonials</h3>
+              <p class="text-sm text-zinc-600">Curate guest quotes</p>
+            </div>
+          </div>
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -84,6 +108,10 @@
 
 <script setup lang="ts">
 import { ShoppingBag, Package, Users, DollarSign, Layers } from 'lucide-vue-next'
+
+definePageMeta({
+  middleware: 'admin'
+})
 
 const supabase = useSupabase()
 
@@ -119,11 +147,11 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'Admin Dashboard - LiquidLogistics',
+  title: 'Admin Dashboard - Flux',
   meta: [
     {
       name: 'description',
-      content: 'Admin dashboard for managing LiquidLogistics'
+      content: 'Admin dashboard for managing Flux'
     }
   ]
 })

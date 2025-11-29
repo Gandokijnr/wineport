@@ -289,6 +289,29 @@ export interface Database {
           created_at?: string
         }
       }
+      order_status_events: {
+        Row: {
+          id: string
+          order_id: string
+          status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+          note: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+          note?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+          note?: string | null
+          created_at?: string
+        }
+      }
       cart_items: {
         Row: {
           id: string
@@ -346,6 +369,79 @@ export interface Database {
           title?: string | null
           comment?: string | null
           is_verified_purchase?: boolean
+          is_approved?: boolean
+          created_at?: string
+        }
+      }
+      blog_posts: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          excerpt: string | null
+          content: string | null
+          cover_image_url: string | null
+          tags: string[]
+          status: 'draft' | 'published'
+          published_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          excerpt?: string | null
+          content?: string | null
+          cover_image_url?: string | null
+          tags?: string[]
+          status?: 'draft' | 'published'
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          excerpt?: string | null
+          content?: string | null
+          cover_image_url?: string | null
+          tags?: string[]
+          status?: 'draft' | 'published'
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      testimonials: {
+        Row: {
+          id: string
+          author_name: string
+          author_title: string | null
+          quote: string
+          rating: number | null
+          is_featured: boolean
+          is_approved: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          author_name: string
+          author_title?: string | null
+          quote: string
+          rating?: number | null
+          is_featured?: boolean
+          is_approved?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          author_name?: string
+          author_title?: string | null
+          quote?: string
+          rating?: number | null
+          is_featured?: boolean
           is_approved?: boolean
           created_at?: string
         }
