@@ -2,7 +2,6 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
 
   modules: ['@nuxtjs/tailwindcss'],
-  ssr: true,
   typescript: {
     strict: true,
     typeCheck: false
@@ -10,8 +9,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      supabaseUrl: process.env.NUXT_SUPABASE_URL,
-      supabaseAnonKey: process.env.NUXT_SUPABASE_ANON_KEY
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY
     }
   },
 
