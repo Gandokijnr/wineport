@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   modules: ['@nuxtjs/tailwindcss'],
 
@@ -26,6 +26,19 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
+    }
+  },
+
+  nitro: {
+    compatibilityDate: '2025-12-03'
+  },
+
+  vite: {
+    server: {
+      hmr: {
+        host: 'localhost',
+        clientPort: 3000
+      }
     }
   },
 

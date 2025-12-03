@@ -1343,23 +1343,6 @@ async function errorHandler(error, event) {
   // H3 will handle fallback
 }
 
-const script = `
-if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
-  Object.defineProperty(window, '__NUXT_DEVTOOLS_TIME_METRIC__', {
-    value: {},
-    enumerable: false,
-    configurable: true,
-  })
-}
-window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
-`;
-
-const _sBAFFYBZwFYNczU1lrFiNxIdULSLRirYaoHxvtsfZ2A = (function(nitro) {
-  nitro.hooks.hook("render:html", (htmlContext) => {
-    htmlContext.head.push(`<script>${script}<\/script>`);
-  });
-});
-
 const rootDir = "C:/Users/Gandoki/Desktop/flux";
 
 const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"Next-generation beverage e-commerce platform for B2C and B2B customers"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"}],"style":[],"script":[],"noscript":[],"title":"Flux - Premium Beverage Commerce"};
@@ -1449,8 +1432,7 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _sBAFFYBZwFYNczU1lrFiNxIdULSLRirYaoHxvtsfZ2A,
-_el97mNodFoD0MyOoS1chZnSy7U1XKr014V0qgS9tk
+  _el97mNodFoD0MyOoS1chZnSy7U1XKr014V0qgS9tk
 ];
 
 const assets = {};

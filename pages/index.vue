@@ -756,21 +756,21 @@ const blogTeasers = [
     id: 'cellar-basics',
     title: 'Building a weeknight‑friendly cellar without over‑spending',
     summary: 'How to balance everyday bottles with age‑worthy picks so your rack always has the right wine for the moment.',
-    imageUrl: '/images/blog-cellar.jpg',
+    imageUrl: 'https://plus.unsplash.com/premium_photo-1682065727827-9f3c8bbbbd0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d2luZXxlbnwwfDJ8MHx8fDA%3D',
     tagline: 'Cellar Notes'
   },
   {
     id: 'food-pairing',
     title: 'Pairing new‑world Pinot with modern comfort food',
     summary: 'From roasted chicken to mushroom risotto, discover textural pairings that make Pinot the hero.',
-    imageUrl: '/images/blog-pairing.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1656235123277-9ac111857004?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdpbmV8ZW58MHwyfDB8fHww',
     tagline: 'Pairing Guide'
   },
   {
     id: 'sparkling-service',
     title: 'Serving sparkling like a sommelier at home',
     summary: 'Glassware, temperature, and opening rituals that honour your grower Champagne and pet‑nat favorites.',
-    imageUrl: '/images/blog-sparkling.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1602215967218-817e91b4ca99?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8d2luZXxlbnwwfDJ8MHx8fDA%3D',
     tagline: 'Service Rituals'
   }
 ]
