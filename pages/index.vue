@@ -1,446 +1,332 @@
 <template>
   <div class="bg-white">
-    <!-- Hero Carousel -->
     <section
-      class="relative overflow-hidden bg-black text-white"
+      class="relative overflow-hidden bg-[#282828] text-white"
     >
       <div
-        class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-10 lg:gap-16 py-16 lg:py-24"
+        class="relative w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
       >
-        <!-- Carousel Visual -->
-        <div
-          class="relative w-full lg:w-1/2 h-[320px] sm:h-[420px] lg:h-[520px] rounded-3xl overflow-hidden"
-          @mouseenter="isCarouselPaused = true"
-          @mouseleave="isCarouselPaused = false"
-        >
-          <div
-            class="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/30 to-transparent z-10"
-            aria-hidden="true"
-          ></div>
-
-          <div
-            class="relative h-full w-full"
-            role="region"
-            aria-label="Featured wine experiences"
-            tabindex="0"
-            @focusin="isCarouselPaused = true"
-            @focusout="isCarouselPaused = false"
-            @keydown.left.prevent="previousSlide"
-            @keydown.right.prevent="nextSlide"
-          >
-            <div
-              v-for="(slide, index) in heroSlides"
-              :key="slide.id"
-              class="absolute inset-0 transition-opacity duration-700 ease-out"
-              :class="index === activeSlide ? 'opacity-100' : 'opacity-0 pointer-events-none'"
-              :aria-hidden="index !== activeSlide"
-            >
-              <img
-                :src="slide.imageUrl"
-                :alt="slide.alt"
-                class="h-full w-full object-cover"
-              />
-            </div>
-
-            <!-- Carousel controls -->
-            <div class="absolute inset-0 flex flex-col justify-between z-20">
-              <div class="flex justify-end p-4">
-                <span
-                  class="inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs font-medium tracking-wide backdrop-blur"
-                >
-                  <span class="inline-block h-2 w-2 rounded-full bg-emerald-400"></span>
-                  Curated cellar moments
+        <div class="grid lg:grid-cols-[260px_minmax(0,1.6fr)_minmax(0,1fr)] gap-6 lg:gap-8 items-stretch">
+          <aside class="hidden lg:block">
+            <div class="bg-white/5 rounded-2xl p-3 space-y-1">
+              <button
+                v-for="category in wineCategories"
+                :key="category.label"
+                type="button"
+                class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-sm font-medium text-zinc-50/90 hover:bg-white/10 hover:text-white transition-colors"
+                @click="goToCategory(category)"
+              >
+                <span class="flex items-center gap-2">
+                  <span class="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-[11px] text-zinc-50">
+                    {{ category.abbr }}
+                  </span>
+                  <span class="truncate">{{ category.label }}</span>
                 </span>
-              </div>
+                <span class="text-xs text-zinc-300">›</span>
+              </button>
+            </div>
+          </aside>
 
-              <div class="flex items-end justify-between p-4">
-                <div class="flex gap-2" aria-hidden="true">
-                  <button
-                    v-for="(slide, index) in heroSlides"
-                    :key="slide.id"
-                    type="button"
-                    class="h-1.5 w-6 rounded-full transition-all duration-200"
-                    :class="index === activeSlide ? 'bg-white' : 'bg-white/40 hover:bg-white/80'"
-                    @click="goToSlide(index)"
+          <div class="flex flex-col items-center gap-10 lg:gap-16">
+            <div
+              class="relative w-full rounded-3xl overflow-hidden"
+              @mouseenter="isCarouselPaused = true"
+              @mouseleave="isCarouselPaused = false"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/30 to-transparent z-10"
+                aria-hidden="true"
+              ></div>
+
+              <div
+                class="relative h-[420px] sm:h-[480px] lg:h-[560px] w-full"
+                role="region"
+                aria-label="Featured wine experiences"
+                tabindex="0"
+                @focusin="isCarouselPaused = true"
+                @focusout="isCarouselPaused = false"
+                @keydown.left.prevent="previousSlide"
+                @keydown.right.prevent="nextSlide"
+              >
+                <div
+                  v-for="(slide, index) in heroSlides"
+                  :key="slide.id"
+                  class="absolute inset-0 transition-opacity duration-700 ease-out"
+                  :class="index === activeSlide ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                  :aria-hidden="index !== activeSlide"
+                >
+                  <img
+                    :src="slide.imageUrl"
+                    :alt="slide.alt"
+                    class="h-full w-full object-cover"
                   />
                 </div>
 
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white"
-                    @click="previousSlide"
-                    aria-label="Previous slide"
-                  >
-                    <ArrowLeft :size="18" />
-                  </button>
-                  <button
-                    type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white"
-                    @click="nextSlide"
-                    aria-label="Next slide"
-                  >
-                    <ArrowRight :size="18" />
-                  </button>
+                <!-- Carousel controls -->
+                <div class="absolute inset-0 flex flex-col justify-between z-20">
+                  <!-- <div class="flex justify-end p-4">
+                    <span
+                      class="inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs font-medium tracking-wide backdrop-blur"
+                    >
+                      <span class="inline-block h-2 w-2 rounded-full bg-emerald-400"></span>
+                      Curated cellar moments
+                    </span>
+                  </div> -->
+
+                  <div class="flex items-end justify-between p-4">
+                    <!-- <div class="flex gap-2" aria-hidden="true">
+                      <button
+                        v-for="(slide, index) in heroSlides"
+                        :key="slide.id"
+                        type="button"
+                        class="h-1.5 w-6 rounded-full transition-all duration-200"
+                        :class="index === activeSlide ? 'bg-white' : 'bg-white/40 hover:bg-white/80'"
+                        @click="goToSlide(index)"
+                      />
+                    </div> -->
+
+                    <!-- <div class="flex items-center gap-2">
+                      <button
+                        type="button"
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white"
+                        @click="previousSlide"
+                        aria-label="Previous slide"
+                      >
+                        <ArrowLeft :size="18" />
+                      </button>
+                      <button
+                        type="button"
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white"
+                        @click="nextSlide"
+                        aria-label="Next slide"
+                      >
+                        <ArrowRight :size="18" />
+                      </button>
+                    </div> -->
+                  </div>
+                </div>
+
+                <!-- Hero content overlay -->
+                <div class="absolute inset-0 z-30 flex items-center backdrop-blur-sm">
+                  <div class="w-full px-4 sm:px-6 lg:px-8">
+                    <div class="relative max-w-xl text-left text-zinc-50">
+                      <div
+                        class="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-tr from-amber-500/10 via-rose-500/5 to-transparent blur-3xl"
+                        aria-hidden="true"
+                      ></div>
+
+                      <div class="hidden flex-wrap items-center gap-4 mb-6 md:flex">
+                        <NuxtLink
+                          to="/products?featured=true"
+                          class="btn btn-primary px-6 sm:px-8 py-3 text-sm sm:text-base"
+                        >
+                          Shop Bestsellers
+                        </NuxtLink>
+                        <NuxtLink
+                          to="/products"
+                          class="btn btn-secondary px-6 sm:px-8 py-3 text-sm sm:text-base"
+                        >
+                          Explore Collections
+                        </NuxtLink>
+                      </div>
+
+                      <div class="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-zinc-200/90">
+                        <div class="flex items-center gap-2">
+                          <Sparkles :size="16" />
+                          <span>Curated by in‑house sommeliers</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <ShieldCheck :size="16" />
+                          <span>Temperature‑aware fulfillment partners</span>
+                        </div>
+                      </div>
+
+                      <div class="mt-6 md:grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="rounded-2xl bg-white/5 px-4 py-3 flex items-center gap-3">
+                          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#D4AF37] text-[#282828]">
+                            <Sparkles :size="18" />
+                          </div>
+                          <div class="text-xs sm:text-sm">
+                            <p class="font-semibold">New cellar arrivals</p>
+                            <p class="text-zinc-200/80">Shop this weeks allocations before they sell out.</p>
+                          </div>
+                        </div>
+                        <div class="rounded-2xl bg-white/5 px-4 py-3 flex items-center gap-3">
+                          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[#D4AF37]">
+                            <CreditCard :size="18" />
+                          </div>
+                          <div class="text-xs sm:text-sm">
+                            <p class="font-semibold">Flexible payments</p>
+                            <p class="text-zinc-200/80">Secure checkout with cards and local methods.</p>
+                          </div>
+                        </div>
+                        <div class="sm:col-span-2 rounded-2xl bg-[#FAFAFA]/95 text-[#282828] px-4 py-4 flex items-center justify-between gap-4">
+                          <div class="flex items-center gap-3">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#282828] text-[#D4AF37]">
+                              <Headset :size="18" />
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                              <p class="font-semibold">Prefer to order by phone?</p>
+                              <p class="text-zinc-600">Our sommeliers can place your order in minutes.</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            class="inline-flex items-center gap-2 rounded-full bg-[#282828] text-[#FAFAFA] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-black transition-colors"
+                          >
+                            <PhoneCall :size="16" />
+                            <span>Call to order</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Hero Copy -->
-        <div
-          class="relative w-full lg:w-1/2 text-left text-zinc-50"
-        >
-          <div
-            class="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-tr from-amber-500/10 via-rose-500/5 to-transparent blur-3xl"
-            aria-hidden="true"
-          ></div>
-
-          <p class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-100">
-            Fine Wine E‑Commerce
-          </p>
-
-          <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight text-white mb-4">
-            Cellar‑worthy bottles,
-            <span class="text-amber-200">delivered to your door.</span>
-          </h1>
-
-          <p class="max-w-xl text-base sm:text-lg text-zinc-200 leading-relaxed mb-6">
-            Discover hand‑picked reds, whites, and sparkling icons from the world’s most
-            celebrated regions. Every bottle is stored, handled, and shipped with
-            sommelier‑level care.
-          </p>
-
-          <div class="flex flex-wrap items-center gap-4 mb-6">
-            <NuxtLink
-              to="/products?featured=true"
-              class="btn btn-primary px-6 sm:px-8 py-3 text-sm sm:text-base"
-            >
-              Shop Bestsellers
-            </NuxtLink>
-            <NuxtLink
-              to="/products"
-              class="btn btn-secondary px-6 sm:px-8 py-3 text-sm sm:text-base"
-            >
-              Explore Collections
-            </NuxtLink>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-zinc-200/90">
-            <div class="flex items-center gap-2">
-              <Sparkles :size="16" />
-              <span>Curated by in‑house sommeliers</span>
+          <div class="mt-6 flex gap-4 overflow-x-auto pb-1 lg:mt-0 lg:flex-col lg:overflow-visible lg:pb-0">
+            <div class="min-w-[260px] lg:min-w-0 rounded-3xl bg-gradient-to-br from-[#D4AF37] via-[#f7e7b9] to-[#D4AF37] p-4 shadow-lg flex flex-col justify-between lg:h-[240px]">
+              <div class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#5b430f]/80">
+                Cellar festival
+              </div>
+              <div>
+                <p class="text-2xl sm:text-3xl font-bold text-[#282828] leading-tight">
+                  Up to 20% OFF
+                </p>
+                <p class="mt-1 text-xs sm:text-sm text-[#4b3a16]">
+                  Curated cellar cases and gift-ready duos for every celebration.
+                </p>
+              </div>
+              <div class="mt-3 inline-flex items-center gap-1 rounded-full bg-[#282828] text-[#FAFAFA] px-3 py-1 text-[11px] font-semibold animate-pulse">
+                Limited time · Shop festival
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <ShieldCheck :size="16" />
-              <span>Temperature‑aware fulfillment partners</span>
+
+            <div class="min-w-[260px] lg:min-w-0 rounded-3xl bg-[#141414]/90 border border-white/10 p-4 shadow-lg flex flex-col justify-between lg:h-[240px]">
+              <div class="flex items-center gap-2">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37]/15 text-[#D4AF37]">
+                  <Sparkles :size="18" />
+                </div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-300">
+                  Sign up & save
+                </p>
+              </div>
+              <div class="mt-2">
+                <p class="text-sm sm:text-base font-semibold text-white">
+                  Extra 10% off your first cellar order
+                </p>
+                <p class="mt-1 text-xs text-zinc-400">
+                  Join our list for member-only releases and early access drops.
+                </p>
+              </div>
+              <button
+                type="button"
+                class="mt-3 inline-flex items-center gap-2 rounded-full bg-[#FAFAFA] text-[#282828] px-4 py-2 text-xs font-semibold group hover:bg-[#D4AF37] hover:text-[#282828] transition-colors"
+              >
+                <span>Unlock welcome offer</span>
+                <ArrowRight :size="14" class="transition-transform group-hover:translate-x-1" />
+              </button>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Catalog preview -->
-    <section class="py-16 sm:py-20 bg-white">
+    <!-- Flash Sales -->
+    <section class="py-6 sm:py-8 bg-[#282828] text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 class="font-serif text-3xl sm:text-4xl font-semibold text-zinc-900 mb-2">
-              Cellar‑ready bestsellers
-            </h2>
-            <p class="text-sm sm:text-base text-zinc-600 max-w-xl">
-              A rotating selection of bottles our community reorders again and again. Limited
-              allocations update weekly.
+            <h2 class="font-serif text-2xl sm:text-3xl font-semibold">Flash Sales</h2>
+            <p class="text-xs sm:text-sm text-zinc-300 max-w-md">
+              Limited-time offers on cellar-worthy bottles. Once they're gone, they're gone.
             </p>
           </div>
-          <NuxtLink
-            to="/products"
-            class="text-sm font-medium text-zinc-900 hover:text-zinc-600 underline underline-offset-4"
-          >
-            View full catalog
-          </NuxtLink>
-        </div>
-
-        <div v-if="loadingProducts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div
-            v-for="i in 4"
-            :key="i"
-            class="card animate-pulse"
-          >
-            <div class="aspect-[3/4] bg-zinc-100 rounded-xl mb-4"></div>
-            <div class="h-4 bg-zinc-200 rounded mb-2"></div>
-            <div class="h-3 bg-zinc-200 rounded w-2/3 mb-2"></div>
-            <div class="h-3 bg-zinc-100 rounded w-1/3"></div>
+          <div class="flex items-center gap-2 text-xs sm:text-sm">
+            <span class="uppercase tracking-[0.18em] text-zinc-400">Ends in</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-black/40 px-3 py-1 font-mono text-sm">
+              <span>{{ flashCountdown }}</span>
+            </span>
           </div>
         </div>
 
         <div
-          v-else-if="featuredProducts.length > 0"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          v-if="flashSaleProducts.length > 0"
+          class="mt-4 sm:mt-6 overflow-x-auto pb-2"
         >
-          <article
+          <div
+            class="grid grid-flow-col auto-cols-[68%] xs:auto-cols-[55%] sm:auto-cols-[40%] md:auto-cols-[30%] lg:auto-cols-[23%] gap-4"
+          >
+            <WineCard
+              v-for="product in flashSaleProducts"
+              :key="product.id"
+              :product="mapProductToCardProduct(product)"
+              @addToCart="() => handleAddToCart(product)"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All wines preview -->
+    <section class="py-10 bg-[#FAFAFA]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-[#282828]">All wines</h2>
+            <p class="text-xs sm:text-sm text-zinc-500 max-w-md">
+              Explore more bottles from our cellar. This is a preview of today's selection.
+            </p>
+          </div>
+        </div>
+
+        <div v-if="loadingProducts" class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
+          <div
+            v-for="n in 8"
+            :key="n"
+            class="rounded-xl bg-white border border-zinc-200/80 p-3 sm:p-4 flex flex-col gap-3 shimmer"
+          >
+            <div class="rounded-lg bg-zinc-100/80 h-32 sm:h-40"></div>
+            <div class="space-y-2">
+              <div class="h-2.5 w-16 rounded-full bg-zinc-100"></div>
+              <div class="h-3 w-32 rounded-full bg-zinc-100"></div>
+              <div class="flex gap-2 mt-1">
+                <div class="h-5 w-12 rounded-full bg-zinc-100"></div>
+                <div class="h-5 w-10 rounded-full bg-zinc-100"></div>
+              </div>
+            </div>
+            <div class="mt-auto space-y-1">
+              <div class="h-3 w-20 rounded-full bg-zinc-100"></div>
+              <div class="h-3 w-16 rounded-full bg-zinc-100"></div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-else-if="featuredProducts.length"
+          class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4"
+        >
+          <WineCard
             v-for="product in featuredProducts"
             :key="product.id"
-            class="group card flex flex-col h-full"
-          >
-            <div class="relative mb-4">
-              <div class="aspect-[3/4] w-full overflow-hidden rounded-xl bg-zinc-100">
-                <img
-                  v-if="product.image_urls?.[0]"
-                  :src="product.image_urls[0]"
-                  :alt="product.name"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div
-                  v-else
-                  class="flex h-full w-full items-center justify-center text-zinc-300"
-                >
-                  <Wine :size="48" />
-                </div>
-              </div>
-
-              <div
-                v-if="product.averageRating && product.reviewCount"
-                class="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-amber-100 backdrop-blur"
-              >
-                <Star :size="14" class="fill-amber-300 text-amber-300" />
-                <span>{{ product.averageRating.toFixed(1) }}</span>
-                <span class="text-[11px] text-zinc-200/80">
-                  ({{ product.reviewCount }})
-                </span>
-              </div>
-            </div>
-
-            <div class="flex flex-1 flex-col gap-2">
-              <div>
-                <h3 class="text-sm sm:text-base font-semibold text-zinc-900 line-clamp-2 mb-1">
-                  {{ product.name }}
-                </h3>
-                <p class="text-xs text-zinc-600">
-                  {{ product.country_of_origin || 'From renowned wine regions worldwide' }}
-                </p>
-              </div>
-
-              <div class="mt-1 flex items-baseline justify-between gap-2">
-                <p class="text-base font-semibold text-zinc-900">
-                  ${{ product.price.toFixed(2) }}
-                </p>
-                <p
-                  v-if="product.compare_at_price && product.compare_at_price > product.price"
-                  class="text-xs text-zinc-500 line-through"
-                >
-                  ${{ product.compare_at_price.toFixed(2) }}
-                </p>
-              </div>
-
-              <div class="mt-4 flex items-center gap-2">
-                <button
-                  type="button"
-                  class="btn btn-secondary w-full justify-center text-xs sm:text-sm"
-                  @click="openQuickView(product)"
-                >
-                  Quick view
-                </button>
-                <NuxtLink
-                  :to="`/products/${product.slug}`"
-                  class="btn btn-outline w-full justify-center text-xs sm:text-sm"
-                >
-                  View product
-                </NuxtLink>
-              </div>
-            </div>
-          </article>
+            :product="mapProductToCardProduct(product)"
+            @addToCart="() => handleAddToCart(product)"
+          />
         </div>
 
-        <div v-else class="text-center py-12">
-          <p class="text-zinc-600 mb-4">
-            Our debut vintages are being prepared for release. Check back soon for featured bottles.
-          </p>
-          <NuxtLink to="/products" class="btn btn-primary">
-            Browse all wines
+        <div v-else class="mt-6 text-sm text-zinc-500">
+          No wines are available right now. Please check back soon.
+        </div>
+
+        <div class="mt-6 flex justify-center">
+          <NuxtLink
+            to="/products"
+            class="inline-flex items-center justify-center rounded-full border border-[#D4AF37] px-6 py-2.5 text-sm font-semibold text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#282828] transition-colors"
+          >
+            View all wines
           </NuxtLink>
-        </div>
-      </div>
-    </section>
-
-    <!-- Explore by category -->
-    <section class="py-12 sm:py-16 bg-zinc-50 border-y border-zinc-100">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div>
-            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-zinc-900 mb-1">
-              Explore wines by category
-            </h2>
-            <p class="text-sm text-zinc-600 max-w-xl">
-              Follow your favourite styles or discover new regions with one tap.
-            </p>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap gap-3">
-          <button
-            v-for="category in wineCategories"
-            :key="category.label"
-            type="button"
-            class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs sm:text-sm font-medium text-zinc-800 shadow-sm hover:border-zinc-300 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-900"
-            @click="goToCategory(category)"
-          >
-            <span
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-[11px] text-zinc-50"
-            >
-              {{ category.abbr }}
-            </span>
-            <span>{{ category.label }}</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Value propositions -->
-    <section class="py-14 bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="flex items-start gap-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white">
-              <Truck :size="18" />
-            </div>
-            <div>
-              <h3 class="text-sm font-semibold text-zinc-900 mb-1">
-                Free shipping over ${{ freeShippingThreshold.toFixed(0) }}
-              </h3>
-              <p class="text-sm text-zinc-600">
-                Carefully packed, insured shipments with optional temperature‑controlled delivery
-                in select regions.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white">
-              <ShieldCheck :size="18" />
-            </div>
-            <div>
-              <h3 class="text-sm font-semibold text-zinc-900 mb-1">
-                Authenticity guaranteed
-              </h3>
-              <p class="text-sm text-zinc-600">
-                Direct allocations and vetted partners only. Provenance tracked from cellar to
-                your collection.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white">
-              <CreditCard :size="18" />
-            </div>
-            <div>
-              <h3 class="text-sm font-semibold text-zinc-900 mb-1">
-                Secure, flexible payments
-              </h3>
-              <p class="text-sm text-zinc-600">
-                Encrypted checkout with cards, bank transfers, and local payment options where
-                available.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-4">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white">
-              <Sparkles :size="18" />
-            </div>
-            <div>
-              <h3 class="text-sm font-semibold text-zinc-900 mb-1">
-                Expert sommelier picks
-              </h3>
-              <p class="text-sm text-zinc-600">
-                Seasonal selections and verticals curated for both weekday glasses and blue‑chip
-                cellaring.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Blog teaser & testimonials -->
-    <section class="py-16 sm:py-20 bg-zinc-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12 lg:gap-16">
-        <!-- Blog teaser -->
-        <div>
-          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
-            <div>
-              <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-zinc-900 mb-1">
-                From the tasting room journal
-              </h2>
-              <p class="text-sm text-zinc-600 max-w-xl">
-                Short, practical guides from our sommeliers on building a collection you’ll
-                actually drink.
-              </p>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <article
-              v-for="post in blogTeasers"
-              :key="post.id"
-              class="group h-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div class="aspect-[4/3] overflow-hidden bg-zinc-100">
-                <img
-                  :src="post.imageUrl"
-                  :alt="post.title"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div class="p-4 sm:p-5 flex flex-col gap-2">
-                <p class="text-xs text-zinc-500 uppercase tracking-[0.18em]">
-                  {{ post.tagline }}
-                </p>
-                <h3 class="text-sm sm:text-base font-semibold text-zinc-900 line-clamp-2">
-                  {{ post.title }}
-                </h3>
-                <p class="text-xs text-zinc-600 line-clamp-2">
-                  {{ post.summary }}
-                </p>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <!-- Testimonials preview -->
-        <div id="testimonials" class="border-t border-zinc-200 pt-10">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-zinc-900">
-              Trusted by collectors & hospitality teams
-            </h2>
-            <a
-              href="#testimonials"
-              class="text-sm font-medium text-zinc-900 hover:text-zinc-600 underline underline-offset-4"
-            >
-              Read more testimonials
-            </a>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure
-              v-for="testimonial in testimonials"
-              :key="testimonial.name"
-              class="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8"
-            >
-              <Quote class="absolute -top-3 -left-3 h-10 w-10 text-zinc-100" />
-              <blockquote class="relative text-sm text-zinc-700 leading-relaxed mb-4">
-                “{{ testimonial.quote }}”
-              </blockquote>
-              <figcaption class="relative text-sm font-medium text-zinc-900">
-                {{ testimonial.name }}
-                <span class="block text-xs font-normal text-zinc-500">
-                  {{ testimonial.role }}
-                </span>
-              </figcaption>
-            </figure>
-          </div>
         </div>
       </div>
     </section>
@@ -593,7 +479,8 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, ArrowRight, CreditCard, Quote, ShieldCheck, Sparkles, Star, Truck, Wine, X } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, CreditCard, PhoneCall, Headset, Quote, ShieldCheck, Sparkles, Star, Truck, Wine, X } from 'lucide-vue-next'
+import WineCard from '~/components/WineCard.vue'
 import type { Database } from '~/types/database'
 
 type Product = Database['public']['Tables']['products']['Row']
@@ -605,6 +492,43 @@ type ProductWithRating = Product & {
 }
 
 const supabase = useSupabase()
+const { addToCart } = useCart()
+
+const getTypeLabel = (product: ProductWithRating): string => {
+  const tags = (product.tags || []).map(tag => tag.toLowerCase())
+  const name = product.name.toLowerCase()
+
+  if (tags.includes('red') || name.includes('red wine')) return 'Red'
+  if (tags.includes('white') || name.includes('white wine')) return 'White'
+  if (tags.some(t => t.includes('rosé') || t.includes('rose')) || name.includes('rosé')) return 'Rosé'
+  if (tags.includes('sparkling') || tags.includes('champagne') || name.includes('champagne')) return 'Sparkling'
+
+  return 'Red'
+}
+
+const getBrandLabel = (product: ProductWithRating): string => {
+  return product.brand || 'Cellar Selection'
+}
+
+const mapProductToCardProduct = (product: ProductWithRating) => {
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    brand: getBrandLabel(product),
+    price: product.price,
+    oldPrice: product.compare_at_price ?? undefined,
+    image: Array.isArray(product.image_urls) && product.image_urls.length
+      ? product.image_urls[0]
+      : '/landing-page/glass-with-ice-cube-smoke.jpg',
+    badges: product.is_featured ? ['Featured'] : undefined,
+    rating: product.averageRating,
+    specs: {
+      type: getTypeLabel(product),
+      abv: product.alcohol_percentage != null ? `${product.alcohol_percentage}%` : undefined
+    }
+  }
+}
 
 // Hero carousel
 const heroSlides = [
@@ -615,12 +539,12 @@ const heroSlides = [
   },
   {
     id: 2,
-    imageUrl: '/landing-page/glass-with-ice-cube-smoke.jpg',
+    imageUrl: '/landing-page/wines.jpg',
     alt: 'Elegant tablescape with crystal stemware and a decanted red wine.'
   },
   {
     id: 3,
-    imageUrl: '/landing-page/glass-with-ice-cube-smoke.jpg',
+    imageUrl: '/landing-page/wines 3.jpg',
     alt: 'Sunset over a hillside vineyard with golden light on the vines.'
   }
 ]
@@ -663,10 +587,61 @@ const stopAutoplay = () => {
   }
 }
 
+// Flash sales countdown (client-side only)
+const flashCountdown = ref('02:00:00')
+let flashEndTime: number | null = null
+let flashInterval: ReturnType<typeof setInterval> | null = null
+
+const updateFlashCountdown = () => {
+  if (!flashEndTime) return
+  const remaining = Math.max(0, flashEndTime - Date.now())
+  const totalSeconds = Math.floor(remaining / 1000)
+  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0')
+  const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0')
+  const seconds = String(totalSeconds % 60).padStart(2, '0')
+  flashCountdown.value = `${hours}:${minutes}:${seconds}`
+}
+
+const startFlashCountdown = () => {
+  if (flashInterval) return
+  // Simple 2-hour window from first mount
+  flashEndTime = Date.now() + 2 * 60 * 60 * 1000
+  updateFlashCountdown()
+  flashInterval = setInterval(updateFlashCountdown, 1000)
+}
+
+const stopFlashCountdown = () => {
+  if (flashInterval) {
+    clearInterval(flashInterval)
+    flashInterval = null
+  }
+}
+
 // Catalog preview
 const loadingProducts = ref(true)
 const featuredProducts = ref<ProductWithRating[]>([])
 const freeShippingThreshold = ref(200)
+
+const flashSaleProducts = computed(() => featuredProducts.value.slice(0, 8))
+
+type DealsTab = 'flash' | 'top' | 'recommended'
+const activeDealsTab = ref<DealsTab>('flash')
+
+const setDealsTab = (tab: DealsTab) => {
+  activeDealsTab.value = tab
+}
+
+const addingToCartId = ref<string | null>(null)
+
+const handleAddToCart = async (product: ProductWithRating) => {
+  if (!product.id) return
+  addingToCartId.value = product.id
+  const { success } = await addToCart(product.id, 1)
+  if (!success) {
+    console.error('Failed to add product to cart')
+  }
+  addingToCartId.value = null
+}
 
 const fetchFeaturedProducts = async () => {
   loadingProducts.value = true
@@ -675,9 +650,9 @@ const fetchFeaturedProducts = async () => {
       .from('products')
       .select('*')
       .eq('is_active', true)
-      .eq('is_featured', true)
+      // .eq('is_featured', true)
       .order('created_at', { ascending: false })
-      .limit(8)
+      .limit(20)
 
     if (productsError) throw productsError
 
@@ -794,11 +769,13 @@ const subscribeEmail = ref('')
 
 onMounted(() => {
   startAutoplay()
+  startFlashCountdown()
   fetchFeaturedProducts()
 })
 
 onBeforeUnmount(() => {
   stopAutoplay()
+  stopFlashCountdown()
 })
 
 useHead({

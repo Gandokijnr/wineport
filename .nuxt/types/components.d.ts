@@ -20,8 +20,8 @@ interface _GlobalComponents {
   'Header': typeof import("../../components/Header.vue")['default']
   'OrderCard': typeof import("../../components/OrderCard.vue")['default']
   'OrderTimeline': typeof import("../../components/OrderTimeline.vue")['default']
-  'ProductCard': typeof import("../../components/ProductCard.vue")['default']
   'ProfileForm': typeof import("../../components/ProfileForm.vue")['default']
+  'WineCard': typeof import("../../components/WineCard.vue")['default']
   'NuxtWelcome': typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   'NuxtLayout': typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   'NuxtErrorBoundary': typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -51,8 +51,8 @@ interface _GlobalComponents {
   'LazyHeader': LazyComponent<typeof import("../../components/Header.vue")['default']>
   'LazyOrderCard': LazyComponent<typeof import("../../components/OrderCard.vue")['default']>
   'LazyOrderTimeline': LazyComponent<typeof import("../../components/OrderTimeline.vue")['default']>
-  'LazyProductCard': LazyComponent<typeof import("../../components/ProductCard.vue")['default']>
   'LazyProfileForm': LazyComponent<typeof import("../../components/ProfileForm.vue")['default']>
+  'LazyWineCard': LazyComponent<typeof import("../../components/WineCard.vue")['default']>
   'LazyNuxtWelcome': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   'LazyNuxtLayout': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   'LazyNuxtErrorBoundary': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

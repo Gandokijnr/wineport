@@ -33,3 +33,4 @@ export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useAuth } from '../composables/useAuth';
 export { useCart } from '../composables/useCart';
 export { useSupabase } from '../composables/useSupabase';
+export { useWishlist } from '../composables/useWishlist';
